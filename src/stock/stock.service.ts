@@ -1,13 +1,12 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, Inject } from '@nestjs/common';
 import { Stock } from './interfaces/stock.interface';
 import { CreateStockDto } from './dto/create-stock.dto';
 
 @Injectable()
 export class StockService {
     constructor(
-        @InjectModel('StockModelToken')
+        @Inject('StockModelToken')
         private readonly stockModel: Model<Stock>,
     ) {}
 

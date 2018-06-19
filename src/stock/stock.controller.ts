@@ -5,15 +5,9 @@ import { StockService } from './stock.service';
 
 @Controller('stock')
 export class StockController {
-<<<<<<< HEAD
-    constructor(private catsService: StockService) {}
-=======
-
-    private stockService: StockService;
 
     constructor(private readonly stockService: StockService) {
     }
->>>>>>> e606529f60de10d887412a9f5e633f5adacc7882
 
     @Post()
     async create(@Body() createStockDto: CreateStockDto) {
