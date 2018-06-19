@@ -4,7 +4,7 @@ import { Transport } from 'mqtt';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // https://docs.nestjs.com/microservices/basics
+  // @docs https://docs.nestjs.com/microservices/basics
   // Décommenter quand le server MQTT sera disponible
   // const app = await NestFactory.createMicroservice(AppModule, {
   //   transport: Transport.MQTT,
