@@ -5,15 +5,19 @@ import { Stock } from './interfaces/stock.interface';
 
 @Controller('stock')
 export class StockController {
-    constructor(private readonly catsService: StockService) {}
+
+    private stockService: StockService;
+
+    constructor(private readonly stockService: StockService) {
+    }
 
     @Post()
     async create(@Body() createCatDto: CreateStockDto) {
-        this.catsService.create(createCatDto);
+        this.stockService.create(createCatDto);
     }
 
     @Get()
     async findAll(): Promise<Stock[]> {
-        return this.catsService.findAll();
+        return this.stockService.findAll();
     }
 }
