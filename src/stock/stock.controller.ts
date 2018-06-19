@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { Stock } from './interfaces/stock.interface';
 import { StockService } from './stock.service';
@@ -16,8 +16,8 @@ export class StockController {
 >>>>>>> e606529f60de10d887412a9f5e633f5adacc7882
 
     @Post()
-    async create(@Body() createCatDto: CreateStockDto) {
-        this.stockService.create(createCatDto);
+    async create(@Body() createStockDto: CreateStockDto) {
+        this.stockService.create(createStockDto);
     }
 
     @Get()

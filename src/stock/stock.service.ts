@@ -6,7 +6,10 @@ import { CreateStockDto } from './dto/create-stock.dto';
 
 @Injectable()
 export class StockService {
-    constructor(@InjectModel('stock') private readonly stockModel: Model<Stock>) {}
+    constructor(
+        @InjectModel('StockModelToken')
+        private readonly stockModel: Model<Stock>,
+    ) {}
 
     async create(createStockDto: CreateStockDto): Promise<Stock> {
         const createdStock = new this.stockModel(createStockDto);
