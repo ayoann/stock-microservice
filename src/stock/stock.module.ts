@@ -5,7 +5,7 @@ import { DatabaseModule } from '../database/database.module';
 
 @Module({
     imports: [DatabaseModule],
-    controllers: [StockController],
     providers: [StockService],
+    controllers: [StockController],
 })
 export class StockModule {}
