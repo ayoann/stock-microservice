@@ -5,15 +5,23 @@ import { StockService } from './stock.service';
 
 @Controller('stock')
 export class StockController {
+<<<<<<< HEAD
     constructor(private catsService: StockService) {}
+=======
+
+    private stockService: StockService;
+
+    constructor(private readonly stockService: StockService) {
+    }
+>>>>>>> e606529f60de10d887412a9f5e633f5adacc7882
 
     @Post()
     async create(@Body() createCatDto: CreateStockDto) {
-        this.catsService.create(createCatDto);
+        this.stockService.create(createCatDto);
     }
 
     @Get()
     async findAll(): Promise<Stock[]> {
-        return this.catsService.findAll();
+        return this.stockService.findAll();
     }
 }
