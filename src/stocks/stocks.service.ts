@@ -21,7 +21,15 @@ export class StocksService {
     async create(createStockDto: CreateStockDto): Promise<Stock> {
         const createdStock = new this.stockModel(createStockDto);
         const stock = await createdStock.save();
-        this.client.sendSingleMessage({message: 'Stock `${stock._id}` added'}, (err, result, disposed) => {
+        const message = {
+            user: {id: 'ZAERTYERTY'},
+            tracking: {
+                location: 'Nantes',
+                productId: stock._id,
+                commandName: stock.name,
+            },
+        };
+        this.client.sendSingleMessage(message, (err, result, disposed) => {
             console.log(err, result, disposed);
         });
         return stock;
