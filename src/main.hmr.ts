@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {RabbitMQServer} from './rabbitmq-server';
+import {RabbitMQServer} from './amq/rabbitmq-server';
 
 declare const module: any;
 

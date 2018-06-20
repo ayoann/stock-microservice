@@ -2,23 +2,29 @@ import {Model} from 'mongoose';
 import {Injectable, Inject} from '@nestjs/common';
 import {Stock} from './interfaces/stock.interface';
 import {CreateStockDto} from './dto/create-stock.dto';
-import {RabbitMQClient} from '../rabbitmq-client';
+import {RabbitMQClient} from '../amq/rabbitmq-client';
+import {AMQService} from '../amq/amq.service';
 
 @Injectable()
 export class StocksService {
 
     client: RabbitMQClient;
 
-    constructor(@Inject('StockModelToken') private readonly stockModel: Model<Stock>) {
-        this.client = new RabbitMQClient('amqp://localhost', 'stock');
-        this.client.sendSingleMessage({test: 'ok'}, (err, result, disposed) => {
-            console.log(err, result, disposed);
-        });
+    constructor(
+        @Inject('StockModelToken')
+        private readonly stockModel: Model<Stock>,
+        private readonly amqService: AMQService,
+    ) {
+        this.client = amqService.getClient();
     }
 
     async create(createStockDto: CreateStockDto): Promise<Stock> {
         const createdStock = new this.stockModel(createStockDto);
-        return await createdStock.save();
+        const stock = await createdStock.save();
+        this.client.sendSingleMessage({message: 'Stock `${stock._id}` added'}, (err, result, disposed) => {
+            console.log(err, result, disposed);
+        });
+        return stock;
     }
 
     async find(id = null): Promise<Stock[]> {
