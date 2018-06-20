@@ -16,3 +16,9 @@ services:
       - ./data:/data/db
     ports:
       - "27017:27017"
+  rabbitmq:
+      container_name: "rabbitmq"
+      image: rabbitmq:3-management
+      ports:
+        - "5672:5672"
+        - "15672:15672"
