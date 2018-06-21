@@ -1,5 +1,5 @@
 import {Model} from 'mongoose';
-import {Injectable, Inject} from '@nestjs/common';
+import {Injectable, Inject, HttpService} from '@nestjs/common';
 import {Stock} from './interfaces/stock.interface';
 import {CreateStockDto} from './dto/create-stock.dto';
 import {RabbitMQClient} from '../amq/rabbitmq-client';
@@ -14,23 +14,31 @@ export class StocksService {
         @Inject('StockModelToken')
         private readonly stockModel: Model<Stock>,
         private readonly amqService: AMQService,
+        private readonly http: HttpService,
     ) {
         this.client = amqService.getClient();
     }
 
     async create(createStockDto: CreateStockDto): Promise<Stock> {
-        const createdStock = new this.stockModel(createStockDto);
-        const stock = await createdStock.save();
-        const message = {
-            user: {id: 'ZAERTYERTY'},
-            tracking: {
-                location: 'Nantes',
-                productId: stock._id,
-                commandName: stock.name,
-            },
-        };
-        this.client.sendSingleMessage(message, (err, result, disposed) => {
-            console.log(err, result, disposed);
+        let stock = null;
+        let message = null;
+        this.http.get('/users/' + createStockDto.idUser).then(user => {
+            const createdStock = new this.stockModel(createStockDto);
+            stock = createdStock.save().then(s => {
+                this.count().then(q =>
+                    message = {
+                    user: {id: user.id},
+                    tracking: {
+                        location: 'Nantes',
+                        productId: s._id,
+                        commandName: s.name,
+                        totalQuantity: q,
+                    },
+                });
+            });
+            this.client.sendSingleMessage(message, (err, result, disposed) => {
+                console.log(err, result, disposed);
+            });
         });
         return stock;
     }
