@@ -8,11 +8,9 @@ export class StocksController {
   constructor(private readonly stocksService: StocksService) {}
 
   @Get('/quantity')
-  async getQuantity(): object {
-    let quantity = null;
-    await this.stocksService.count().then((q, e) => {
-      quantity = q;
-    });
+  async getQuantity(): Promise<any> {
+    let quantity: number = null;
+    await this.stocksService.count().then((q: number) => quantity = q);
     return { quantity };
   }
 
@@ -32,13 +30,13 @@ export class StocksController {
   }
 
   @Put('/:id')
-  async update(id): Promise<Stock> {
-    return this.stocksService.update(id);
+  async update(@Body() createStockDto: CreateStockDto): Promise<Stock> {
+    return this.stocksService.update(createStockDto);
   }
 
   @Delete('/:id')
-  async remove(id): object {
+  remove(id): object {
     this.stocksService.remove(id);
-    return { message: 'Stock `${id}` removed successfully' };
+    return { message: `Stock ${id} removed successfully` };
   }
 }

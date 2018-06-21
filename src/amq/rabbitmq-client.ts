@@ -1,5 +1,5 @@
 import * as amqp from 'amqplib';
-import { ClientProxy } from '@nestjs/microservices';
+import {ClientProxy, ReadPacket, WritePacket} from '@nestjs/microservices';
 
 export class RabbitMQClient extends ClientProxy {
     constructor(
@@ -8,9 +8,21 @@ export class RabbitMQClient extends ClientProxy {
         super();
     }
 
-    protected async sendSingleMessage(messageObj, callback: (err, result, disposed?: boolean) => void) {
+    connect(): Promise<any> {
+        return null;
+    }
+
+    close(): any {
+        return null;
+    }
+
+    protected publish(packet: ReadPacket, callback: (packet: WritePacket) => void): any {
+        return null;
+    }
+
+    public async sendSingleMessage(messageObj, callback: (err, result, disposed?: boolean) => void) {
         const server = await amqp.connect(this.host);
-        const channel = await server.createChannel();
+        const channel = await server.createChannel(this.queue);
 
         const { sub, pub } = this.getQueues();
         channel.assertQueue(sub, { durable: false });

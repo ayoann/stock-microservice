@@ -4,6 +4,12 @@ import {Stock} from './interfaces/stock.interface';
 import {CreateStockDto} from './dto/create-stock.dto';
 import {RabbitMQClient} from '../amq/rabbitmq-client';
 import {AMQService} from '../amq/amq.service';
+import {AxiosResponse} from '@nestjs/common/http/interfaces/axios.interfaces';
+
+interface User {
+    id: number
+    name: string
+}
 
 @Injectable()
 export class StocksService {
@@ -11,8 +17,7 @@ export class StocksService {
     client: RabbitMQClient;
 
     constructor(
-        @Inject('StockModelToken')
-        private readonly stockModel: Model<Stock>,
+        @Inject('StockModelToken') private readonly stockModel: Model<Stock>,
         private readonly amqService: AMQService,
         private readonly http: HttpService,
     ) {
@@ -22,12 +27,12 @@ export class StocksService {
     async create(createStockDto: CreateStockDto): Promise<Stock> {
         let stock = null;
         let message = null;
-        this.http.get('/users/' + createStockDto.idUser).then(user => {
+        this.http.get('/users/' + createStockDto.idUser).subscribe((user: AxiosResponse<User>) => {
             const createdStock = new this.stockModel(createStockDto);
             stock = createdStock.save().then(s => {
                 this.count().then(q =>
                     message = {
-                    user: {id: user.id},
+                    user: {id: user.data.id},
                     tracking: {
                         location: 'Nantes',
                         productId: s._id,
@@ -43,15 +48,15 @@ export class StocksService {
         return stock;
     }
 
-    async find(id = null): Promise<Stock[]> {
+    find(id = null): Promise<any> {
         if (id) {
-            return await this.stockModel.find(id).exec();
+            return this.stockModel.findById(id).exec();
         }
-        return await this.stockModel.find().exec();
+        return this.stockModel.find().exec();
     }
 
-    async update(id): Promise<Stock> {
-        return await this.stockModel.update(id).exec();
+    async update(createStockDto: CreateStockDto): Promise<Stock> {
+        return await this.stockModel.findByIdAndUpdate(createStockDto.id, createStockDto).exec();
     }
 
     async remove(id) {
@@ -60,6 +65,6 @@ export class StocksService {
     }
 
     async count(): Promise<number> {
-        return await this.stockModel.count();
+        return await this.stockModel.count({});
     }
 }
