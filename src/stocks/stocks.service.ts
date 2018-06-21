@@ -27,12 +27,12 @@ export class StocksService {
     async create(createStockDto: CreateStockDto): Promise<Stock> {
         let stock = null;
         let message = null;
-        this.http.get('/users/' + createStockDto.idUser).subscribe((user: AxiosResponse<User>) => {
+        this.http.get('lb://utilisateurs/api/users').subscribe((user: AxiosResponse<User>) => {
             const createdStock = new this.stockModel(createStockDto);
             stock = createdStock.save().then(s => {
                 this.count().then(q =>
                     message = {
-                    user: {id: user.data.id},
+                    user: {id: user.data},
                     tracking: {
                         location: 'Nantes',
                         productId: s._id,
