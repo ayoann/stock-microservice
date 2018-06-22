@@ -2,7 +2,7 @@ version: "2"
 
 services:
   stock:
-    container_name: app
+    container_name: stock
     restart: always
     build: .
     ports:
